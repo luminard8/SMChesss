@@ -57,7 +57,7 @@ private fun pieceSymbol(type: PieceType, color: PieceColor): String {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConversationListScreen(
+fun ChessBoardScreen(
     engine: ChessEngine,
     localPlaysColor: PieceColor,
     gameOverText: String?,
