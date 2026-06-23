@@ -1,5 +1,10 @@
 package com.smchess.app.ui
 
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,7 +52,7 @@ fun ChatScreen(
     onPlay: () -> Unit,
     onSendText: (String) -> Unit
 ) {
-    var textInput by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("") }
+    var textInput by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -67,7 +72,7 @@ fun ChatScreen(
                     modifier = Modifier.fillMaxWidth().padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    androidx.compose.material3.OutlinedTextField(
+                    OutlinedTextField(
                         value = textInput,
                         onValueChange = { textInput = it },
                         modifier = Modifier.weight(1f),
