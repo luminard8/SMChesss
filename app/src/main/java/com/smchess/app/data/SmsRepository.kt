@@ -7,7 +7,7 @@ object SmsRepository {
 
     /** Liste des conversations, triées par date du dernier message (plus récent en premier) */
     fun getConversations(context: Context): List<Conversation> {
-        val messages = getAllMessages(context)
+        val messages = queryMessages(context)
         val byThread = messages.groupBy { it.threadId }
         val conversations = mutableListOf<Conversation>()
         for ((threadId, msgs) in byThread) {
@@ -29,10 +29,18 @@ object SmsRepository {
 
     /** Tous les messages d'une conversation (codes de jeu inclus), triés du plus ancien au plus récent */
     fun getMessagesForThread(context: Context, threadId: Long): List<SmsMessage> {
-        return getAllMessages(context).filter { it.threadId == threadId }.sortedBy { it.date }
+        return queryMessages(
+            context,
+            selection = "${Telephony.Sms.THREAD_ID} = ?",
+            selectionArgs = arrayOf(threadId.toString())
+        ).sortedBy { it.date }
     }
 
-    private fun getAllMessages(context: Context): List<SmsMessage> {
+    private fun queryMessages(
+        context: Context,
+        selection: String? = null,
+        selectionArgs: Array<String>? = null
+    ): List<SmsMessage> {
         val result = mutableListOf<SmsMessage>()
         val uri = Telephony.Sms.CONTENT_URI
         val projection = arrayOf(
@@ -44,11 +52,10 @@ object SmsRepository {
             Telephony.Sms.TYPE
         )
         val cursor = try {
-            context.contentResolver.query(uri, projection, null, null, "${Telephony.Sms.DATE} DESC")
+            context.contentResolver.query(uri, projection, selection, selectionArgs, "${Telephony.Sms.DATE} DESC")
         } catch (e: SecurityException) {
             null
         } ?: return emptyList()
-
         cursor.use {
             val idIdx = it.getColumnIndex(Telephony.Sms._ID)
             val threadIdx = it.getColumnIndex(Telephony.Sms.THREAD_ID)
@@ -56,7 +63,6 @@ object SmsRepository {
             val bodyIdx = it.getColumnIndex(Telephony.Sms.BODY)
             val dateIdx = it.getColumnIndex(Telephony.Sms.DATE)
             val typeIdx = it.getColumnIndex(Telephony.Sms.TYPE)
-
             while (it.moveToNext()) {
                 val type = if (typeIdx >= 0) it.getInt(typeIdx) else Telephony.Sms.MESSAGE_TYPE_INBOX
                 result.add(
