@@ -94,9 +94,10 @@ fun ChatScreen(
         val visibleMessages = messages.filter { !GameProtocol.isProtocolMessage(it.body) }
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 8.dp),
-            verticalArrangement = Arrangement.Bottom
+            reverseLayout = true,
+            verticalArrangement = Arrangement.Top
         ) {
-            items(visibleMessages) { msg ->
+            items(visibleMessages.reversed()) { msg ->
                 MessageBubble(msg)
             }
         }
