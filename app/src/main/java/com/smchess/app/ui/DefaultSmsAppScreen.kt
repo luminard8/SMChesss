@@ -27,6 +27,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.smchess.app.permissions.buildRequestDefaultSmsAppIntent
 import com.smchess.app.permissions.isDefaultSmsApp
+import android.provider.Telephony
 
 @Composable
 fun rememberIsDefaultSmsApp(): Boolean {
@@ -45,11 +46,15 @@ fun rememberIsDefaultSmsApp(): Boolean {
     return isDefault
 }
 
+
 @Composable
 fun DefaultSmsAppScreen() {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
-
+    
+    // TEMPORAIRE - à retirer après debug
+    val actualDefaultPackage = remember { Telephony.Sms.getDefaultSmsPackage(context) }
+    
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         verticalArrangement = Arrangement.Center,
@@ -69,6 +74,14 @@ fun DefaultSmsAppScreen() {
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(24.dp))
+
+        // TEMPORAIRE - à retirer après debug
+        Text(
+            "[DEBUG] App SMS par défaut actuelle : $actualDefaultPackage",
+            style = MaterialTheme.typography.bodySmall
+        )
+        Spacer(Modifier.height(12.dp))
+
         Button(onClick = { launcher.launch(buildRequestDefaultSmsAppIntent(context)) }) {
             Text("Définir comme appli par défaut")
         }
