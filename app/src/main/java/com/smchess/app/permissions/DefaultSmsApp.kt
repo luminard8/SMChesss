@@ -7,8 +7,11 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Telephony
 
-fun isDefaultSmsApp(context: Context): Boolean =
-    Telephony.Sms.getDefaultSmsPackage(context) == context.packageName
+fun isDefaultSmsApp(context: Context): Boolean {
+    val actual = Telephony.Sms.getDefaultSmsPackage(context)
+    Log.d("SMChess", "Default SMS package = $actual, ours = ${context.packageName}")
+    return actual == context.packageName
+}
 
 /** Construit l'Intent qui ouvre la demande "Définir comme appli SMS par défaut" */
 fun buildRequestDefaultSmsAppIntent(context: Context): Intent {
