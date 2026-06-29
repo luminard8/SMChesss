@@ -1,5 +1,6 @@
 package com.smchess.app.permissions
 
+import android.util.Log
 import android.app.Activity
 import android.app.role.RoleManager
 import android.content.Context
