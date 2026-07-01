@@ -111,8 +111,8 @@ private fun MainApp() {
         }
         is Screen.Chat -> {
             val conv = current.conversation
-           var messages by remember(conv.threadId, tick) {
-    mutableStateOf(emptyList())
+         var messages by remember(conv.threadId, tick) {
+    mutableStateOf<List<SmsMessage>>(emptyList())
 }
             LaunchedEffect(tick, conv.threadId) {
                 messages = SmsRepository.getMessagesForThread(context, conv.threadId)
@@ -140,8 +140,8 @@ private fun MainApp() {
         }
         is Screen.Board -> {
             val conv = current.conversation
-           var messages by remember(conv.threadId, tick) {
-    mutableStateOf(emptyList())
+          var messages by remember(conv.threadId, tick) {
+    mutableStateOf<List<SmsMessage>>(emptyList())
 }
             LaunchedEffect(tick, conv.threadId) {
                 messages = SmsRepository.getMessagesForThread(context, conv.threadId)
