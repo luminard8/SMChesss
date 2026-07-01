@@ -1,3 +1,11 @@
+package com.smchess.app.sms
+
+import android.content.BroadcastReceiver
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
+import android.provider.Telephony
+
 class SmsDeliverReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent) ?: return
@@ -16,7 +24,6 @@ class SmsDeliverReceiver : BroadcastReceiver() {
         context.contentResolver.insert(Telephony.Sms.CONTENT_URI, values)
         SmsEvents.notifyChanged()
 
-        // 👇 NOUVEAU : notification
         NotificationHelper.showMessageNotification(
             context = context,
             sender = address,
