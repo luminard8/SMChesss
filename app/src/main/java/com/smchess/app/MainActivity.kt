@@ -34,6 +34,7 @@ import com.smchess.app.ui.rememberIsDefaultSmsApp
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NotificationHelper.createChannel(this) // 👈 NOUVEAU
         setContent {
             SMChessTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
@@ -41,6 +42,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    // 👇 NOUVEAU : tracker premier plan
+    override fun onResume() {
+        super.onResume()
+        AppState.isInForeground = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        AppState.isInForeground = false
     }
 }
 
