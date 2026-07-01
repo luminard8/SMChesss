@@ -32,6 +32,7 @@ import com.smchess.app.ui.SMChessTheme
 import com.smchess.app.ui.rememberIsDefaultSmsApp
 import com.smchess.app.sms.AppState
 import com.smchess.app.sms.NotificationHelper
+import com.smchess.app.data.SmsMessage
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
