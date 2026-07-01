@@ -20,13 +20,17 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import android.os.Build
 
-val REQUIRED_PERMISSIONS = arrayOf(
-    Manifest.permission.READ_SMS,
-    Manifest.permission.SEND_SMS,
-    Manifest.permission.RECEIVE_SMS,
-    Manifest.permission.READ_CONTACTS
-)
+val REQUIRED_PERMISSIONS = buildList {
+    add(Manifest.permission.READ_SMS)
+    add(Manifest.permission.SEND_SMS)
+    add(Manifest.permission.RECEIVE_SMS)
+    add(Manifest.permission.READ_CONTACTS)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        add(Manifest.permission.POST_NOTIFICATIONS)
+    }
+}.toTypedArray()
 
 fun hasAllPermissions(context: Context): Boolean =
     REQUIRED_PERMISSIONS.all {
