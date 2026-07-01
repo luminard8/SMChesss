@@ -1,25 +1,10 @@
-package com.smchess.app.sms
-
-import android.content.BroadcastReceiver
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
-import android.provider.Telephony
-
-/**
- * Reçu uniquement quand SMChess est l'appli SMS par défaut.
- * Dans ce mode, c'est à NOUS d'insérer le SMS reçu dans le fournisseur de contenu
- * (l'OS ne le fait pas automatiquement pour l'appli par défaut, contrairement à SMS_RECEIVED).
- */
 class SmsDeliverReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent) ?: return
         if (messages.isEmpty()) return
-
         val address = messages[0].originatingAddress ?: return
         val body = messages.joinToString(separator = "") { it.messageBody ?: "" }
         val threadId = Telephony.Threads.getOrCreateThreadId(context, address)
-
         val values = ContentValues().apply {
             put(Telephony.Sms.ADDRESS, address)
             put(Telephony.Sms.BODY, body)
@@ -29,7 +14,14 @@ class SmsDeliverReceiver : BroadcastReceiver() {
             put(Telephony.Sms.READ, 0)
         }
         context.contentResolver.insert(Telephony.Sms.CONTENT_URI, values)
-
         SmsEvents.notifyChanged()
+
+        // 👇 NOUVEAU : notification
+        NotificationHelper.showMessageNotification(
+            context = context,
+            sender = address,
+            body = body,
+            notifId = threadId.toInt()
+        )
     }
 }
